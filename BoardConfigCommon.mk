@@ -20,7 +20,7 @@ TARGET_NO_BOOTLOADER := true
 TARGET_NO_RADIOIMAGE := true
 BOARD_KERNEL_BASE := 0x00200000
 BOARD_KERNEL_PAGESIZE := 4096
-TARGET_KERNEL_SOURCE := kernel/samsung/msm7x27a-common
+TARGET_KERNEL_SOURCE := kernel/samsung/msm7x27a
 
 ## Platform
 TARGET_ARCH := arm
@@ -43,8 +43,8 @@ ARCH_ARM_HAVE_TLS_REGISTER := true
 TARGET_USE_SPARROW_BIONIC_OPTIMIZATION := true
 
 ## FM Radio
-BOARD_HAVE_QCOM_FM := true
-COMMON_GLOBAL_CFLAGS += -DQCOM_FM_ENABLED
+#BOARD_HAVE_QCOM_FM := true
+#COMMON_GLOBAL_CFLAGS += -DQCOM_FM_ENABLED
 
 ## Memory
 TARGET_USES_ION := true
@@ -74,6 +74,7 @@ BOARD_EGL_CFG := device/samsung/msm7x27a-common/prebuilt/lib/egl/egl.cfg
 
 ## Qualcomm BSP
 TARGET_USES_QCOM_BSP := true
+TARGET_RECOVERY_NO_MSM_BSP := true
 COMMON_GLOBAL_CFLAGS += -DQCOM_BSP
 
 ## Camera
@@ -92,7 +93,7 @@ ENABLE_WEBGL := true
 TARGET_WEBKIT_USE_MORE_MEMORY := true
 
 ## TEMPORARY HACK
-PRODUCT_PREBUILT_WEBVIEWCHROMIUM := yes
+#PRODUCT_PREBUILT_WEBVIEWCHROMIUM := yes
 SKIP_SET_METADATA := true
 
 ## Bluetooth
@@ -147,9 +148,9 @@ TW_EXTERNAL_STORAGE_PATH := "/external_sd"
 TW_EXTERNAL_STORAGE_MOUNT_POINT := "external_sd"
 TW_INTERNAL_STORAGE_PATH := "/sdcard"
 TW_INTERNAL_STORAGE_MOUNT_POINT := "sdcard"
-TARGET_RECOVERY_INITRC := device/samsung/msm7x27a-common/recovery/init.recovery.rc
+TARGET_RECOVERY_INITRC := device/samsung/msm7x27a-common/recovery/init.recovery.qcom.rc
 TARGET_RECOVERY_FSTAB := device/samsung/msm7x27a-common/rootdir/fstab.qcom
-BOARD_CUSTOM_RECOVERY_KEYMAPPING := ../../device/samsung/msm7x27a-common/recovery/recovery_keys.c
+#BOARD_CUSTOM_RECOVERY_KEYMAPPING := ../../device/samsung/msm7x27a-common/recovery/recovery_keys.c
 TARGET_RECOVERY_PIXEL_FORMAT := RGBX_8888
 TARGET_USERIMAGES_USE_EXT4 := true
 BOARD_HAS_SDCARD_INTERNAL := true
