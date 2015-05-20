@@ -215,6 +215,29 @@ public:
                                 uint32_t *channels=0,
                                 uint32_t *sampleRate=0,
                                 status_t *status=0);
+
+    virtual AudioStreamOut* openOutputStreamWithFlags(
+                                uint32_t devices,
+                                audio_output_flags_t flags=(audio_output_flags_t)0,
+                                int *format=0,
+                                uint32_t *channels=0,
+                                uint32_t *sampleRate=0,
+                                status_t *status=0);
+
+    virtual status_t setMasterMute(bool muted);
+
+    virtual int createAudioPatch(unsigned int num_sources,
+                               const struct audio_port_config *sources,
+                               unsigned int num_sinks,
+                               const struct audio_port_config *sinks,
+                               audio_patch_handle_t *handle);
+
+    virtual int releaseAudioPatch(audio_patch_handle_t handle);
+
+    virtual int getAudioPort(struct audio_port *port);
+
+    virtual int setAudioPortConfig(const struct audio_port_config *config);
+    
     virtual AudioStreamIn* openInputStream(
 
                                 uint32_t devices,
@@ -303,6 +326,8 @@ private:
                 uint32_t    devices() { return mDevices; }
         virtual status_t    getRenderPosition(uint32_t *dspFrames);
 
+        virtual status_t    getPresentationPosition(uint64_t *frames, struct timespec *timestamp);
+
     private:
                 AudioHardware* mHardware;
                 int         mFd;
@@ -321,7 +346,7 @@ private:
                                 int *pFormat,
                                 uint32_t *pChannels,
                                 uint32_t *pRate);
-        virtual uint32_t    sampleRate() const { ALOGD(" AudioStreamOutDirect: sampleRate\n"); return 8000; }
+        virtual uint32_t    sampleRate() const {ALOGD(" AudioStreamOutDirect: SampleRate %d\n",mSampleRate); return 8000; }
         // must be 32-bit aligned - driver only seems to like 4800
         virtual size_t      bufferSize() const { ALOGD(" AudioStreamOutDirect: bufferSize\n"); return 320; }
         virtual uint32_t    channels() const { ALOGD(" AudioStreamOutDirect: channels\n"); return mChannels; }
@@ -337,6 +362,8 @@ private:
                 uint32_t    devices() { return mDevices; }
         virtual status_t    getRenderPosition(uint32_t *dspFrames);
 
+        virtual status_t    getPresentationPosition(uint64_t *frames, struct timespec *timestamp);
+
     private:
                 AudioHardware* mHardware;
                 int         mFd;
@@ -350,6 +377,7 @@ private:
                 int         mFormat;
     };
 #endif
+
 // ----------------------------------------------------------------------------
 
 class AudioSessionOutLPA : public AudioStreamOut
@@ -407,11 +435,13 @@ public:
     // return the number of audio frames written by the audio dsp to DAC since
     // the output has exited standby
     virtual status_t    getRenderPosition(uint32_t *dspFrames);
-
+	
     virtual status_t    getNextWriteTimestamp(int64_t *timestamp);
     virtual status_t    setObserver(void *observer);
     virtual status_t    getBufferInfo(buf_info **buf);
     virtual status_t    isBufferAvailable(int *isAvail);
+	
+    virtual status_t    getPresentationPosition(uint64_t *frames, struct timespec *timestamp);
 
 	void* memBufferAlloc(int nSize, int32_t *ion_fd);
 
@@ -612,7 +642,10 @@ private:
             uint32_t mVoipBitRate;
             msm_snd_endpoint *mSndEndpoints;
             int mNumSndEndpoints;
-
+#ifdef TARGET_HAS_QACT
+            msm_cad_endpoint *mCadEndpoints;
+            int mNumCadEndpoints;
+#endif
             int mCurSndDevice;
             int m7xsnddriverfd;
             bool        mDualMicEnabled;
